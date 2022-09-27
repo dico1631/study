@@ -1,0 +1,240 @@
+<!-- common.css -->
+<style>
+    .w100 {width: 100px;}
+    .w25 {width: 25px;}
+    .h35 {height: 35px;}
+    .h25 {height: 25px;}
+    .bgClr_yllw{background: yellow;}
+    .bgClr_blu{background: #0d66d5;}
+</style>
+
+<!-- 방법 1. span의 before 사용 -->
+<style>
+    .dfSld {
+        position: relative;
+        display: inline-block;
+        float: left;
+        cursor: pointer;
+    }
+    .dfSld > .chk{
+        display: none;
+    }
+    
+    .dfSld > .chk ~ .rlChck{
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        transition: 0.5s;
+        border: black 1px solid;
+        opacity: 0.4;
+    }
+    .dfSld > .chk ~ .rlChck::before{
+        content: "";
+        position: absolute;
+        right: calc(100% - 30px);
+        display: inline-block;
+        border-radius: 999px;
+        transition: 0.5s;
+        width: 25px;
+        height: 25px;
+        border: black 1px solid;
+        background: yellow;
+    }
+    
+    .dfSld > .chk:checked ~ .rlChck{
+        border: #aaa 1px solid;
+        opacity: 1;
+    }
+    .dfSld > .chk:checked ~ .rlChck::before{
+        right: 3px;
+        border: #aaa 1px solid;
+    }
+</style>
+
+<!-- 방법 2. span 2개 사용 -->
+<style>
+    .dfSld2 {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        float: left;
+        cursor: pointer;
+    }
+    .dfSld2 > .chk{
+        display: none;
+    }
+    
+    .dfSld2 > .chk ~ .rlChck{
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        float: left;
+        border: black 1px solid;
+        border-radius: 999px;
+        transition: 0.5s;
+        opacity: 0.4;
+    }
+    .dfSld2 > .chk ~ .mvPnt{
+        content: "";
+        position: absolute;
+        right: 65%;
+        display: inline-block;
+        float: left;
+        margin: 5%;
+        border-radius: 999px;
+        transition: 0.5s;
+        border: #aaa 1px solid;
+    }
+    
+    .dfSld2 > .chk:checked ~ .rlChck{
+        border: #aaa 1px solid;
+        opacity: 1;
+    }
+    .dfSld2 > .chk:checked ~ .mvPnt{
+        right: 0%;
+    }
+    </style>
+
+
+<!-- 방법 3. span을 부모-자식 관계로 만듦 -->
+<style>
+    .dfSld3 {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        float: left;
+        cursor: pointer;
+    }
+    .dfSld3 > .chk{
+        display: none;
+    }
+    
+    .dfSld3 > .chk ~ .rlChck{
+        position: relative;
+        display: inline-flex;
+        justify-content: flex-start;
+        align-items: center;
+        float: left;
+        border: black 1px solid;
+        border-radius: 999px;
+        transition: 0.5s;
+        opacity: 0.4;
+    }
+    .dfSld3 > .chk ~ .rlChck .mvPnt{
+        content: "";
+        position: absolute;
+        display: inline-block;
+        float: left;
+        margin: 5%;
+        border-radius: 999px;
+        border: #aaa 1px solid;
+        transition: 0.5s;
+    }
+
+    .dfSld3 > .chk:checked ~ .rlChck{
+        justify-content: flex-end;
+        border: #aaa 1px solid;
+        opacity: 1;
+    }
+</style>
+
+<!-- 방법 4. before/after -->
+<style>
+    .dfSld4 {
+        position: relative;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        float: left;
+        cursor: pointer;
+    }
+    .dfSld4 > .chk{
+        display: none;
+    }
+    
+    .dfSld4 > .chk::before{
+        position: relative;
+        display: inline-block;
+        float: left;
+        width: 100%;
+        border: black 1px solid;
+        border-radius: 999px;
+        transition: 0.5s;
+        opacity: 0.4;
+    }
+    .dfSld4 > .chk::after{
+        content: "";
+        position: absolute;
+        display: inline-block;
+        float: left;
+        width: 100%;
+        margin: 5%;
+        border-radius: 999px;
+        border: #aaa 1px solid;
+        transition: 0.5s;
+    }
+
+    .dfSld4 > .chk:checked::before{
+        opacity: 1;
+    }
+
+    .dfSld4 > .chk:checked::after{
+        opacity: 1;
+    }
+</style>
+
+
+
+<label class="dfSld4" style="margin: 300px 300px 0px 100px;">
+    <input type="checkbox" class="chk">
+</label>
+<!-- input에 w/h class 넣기
+    after, before에 몸통, 버튼 하나씩 넣기 > w,h 100%
+    left 0 > transtion 시 left unset해서 무효화시킨 뒤, right 넣기
+    색 opacity or 색 변경으로 넣기
+-->
+
+
+<label class="dfSld" style="margin: 300px 300px 0px 100px;">
+    <input type="checkbox" class="chk">
+    <span class="rlChck w100 h35 bgClr_blu"></span>
+    <!-- span의 before 사용
+        [문제]
+        1. before까지 opacity가 들어감
+        2. before에 width/height class를 넣을 수 없어서 크기가 고정됨
+        3. before에 background class를 넣을 수 없어서 background가 고정됨
+    -->
+</label>
+
+<label class="dfSld2" style="margin: 50px 300px 0px 100px;">
+    <input type="checkbox" class="chk">
+    <span class="rlChck w100 h35 bgClr_blu"></span>
+    <span class="mvPnt w25 h25 bgClr_yllw"></span>
+    <!-- span 2개 사용
+        [장점]
+        1. background/width/height class 넣을 수 있어 문제 해결
+        
+        [문제]
+        1. mvPnt의 움직임 정도를 반응형으로 만들 수 없음
+            1) right/left/margin으로 조절: %로 조절 시 (rlChck 크기+mvPnt 크기)를 width로 잡아 움직이기에 크기에 따라 매번 % 비율을 변경해줘야 하는 문제 발생
+            2) align-items로 조절: checked일 때 end로 부모자 label의 값을 변경해야하기 때문에 스크립트 필요
+            3) float: rlChck가 부모가 아니기 때문에 동작하지 않음
+    -->
+</label>
+
+<label class="dfSld3" style="margin: 50px 300px 0px 100px;">
+    <input type="checkbox" class="chk">
+    <span class="rlChck w100 h35 bgClr_blu">
+        <span class="mvPnt w25 h25 bgClr_yllw"></span>
+    </span>
+    <!-- span을 부모-자식 관계로 만듦
+        [장점]
+        1. 크기에 상관없이 justify-content flex-start/flex-end로 동그라미 위치 변경 가능
+        
+        [문제]
+        1. justify-content는 transition-able 속성이 아니기에 버튼 움직임에 transition이 안 먹힘
+    -->
+</label>

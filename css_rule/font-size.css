@@ -1,0 +1,18 @@
+@mixin calc-font-size($min-vw, $max-vw, $min-font-size, $max-font-size){
+    font-size: calc(#{$min-font-size}rem + ((100vw - #{$min-vw}rem) / (#{$max-vw} - #{$min-vw})) * (#{$max-font-size} - #{$min-font-size}));
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+@media (min-width: 414px){
+  h1 {
+    @include calc-font-size(25.875, 90, 2.25, 4.75);
+  }
+
+@media (min-width: 1440px){
+  h1 {
+    font-size: 4.75rem;
+  }
+}

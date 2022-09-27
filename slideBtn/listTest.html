@@ -1,0 +1,76 @@
+<style>
+.listAside{
+    display: inline-flex;
+    flex-direction: column;
+    padding: 300px;
+}
+.listUL{
+    display: inline-flex;
+    justify-content: center;
+    float: left;
+    width: 100px;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.listUL:first-child{
+    border-top: 1px #ccc solid;
+}
+.listLI{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    border-bottom: 1px #ccc solid;
+    border-right: 1px #ccc solid;
+    width: 100%;
+    box-sizing: border-box;
+}
+.listLI.more{
+    display: inline-flex;
+    flex-direction: column;
+}
+.listLI:first-child{
+    border-left: 1px #ccc solid;
+}
+.listSpan{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px #ccc solid;
+}
+.listSpan:last-child{
+    border-bottom: none;
+}
+</style>
+
+<aside class="listAside">
+    <ul class="listUL">
+        <li class="listLI">1</li>
+        <li class="listLI">2</li>
+        <li class="listLI more">
+            <span class="listSpan">3</span>
+            <span class="listSpan">4</span>
+        </li>
+        <li class="listLI more">
+            <span class="listSpan">3</span>
+            <span class="listSpan">4</span>
+        </li>
+    </ul>
+    <ul class="listUL">
+        <li class="listLI">1</li>
+        <li class="listLI">2</li>
+        <li class="listLI more">
+            <span class="listSpan">3</span>
+            <span class="listSpan">4</span>
+        </li>
+        <li class="listLI more">
+            <span class="listSpan">3</span>
+            <span class="listSpan">4</span>
+        </li>
+    </ul>
+</aside>

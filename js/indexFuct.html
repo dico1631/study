@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<body>
+    <ul class="ul1">
+        <li class="foo">foo</li>
+        <li class="bar">bar</li>
+        <li class="baz">baz</li>
+        <button class="btn1">click</button>
+    </ul>
+    <ul class="ul1">
+        <li class="foo">foo</li>
+        <li class="bar">bar</li>
+        <li class="baz">baz</li>
+        <button class="btn1">click</button>
+    </ul>
+</body>
+<script>
+    $(".btn1").click(function(){
+        var $ul = $(this).parent(".ul1");
+        var err = $ul.find(".li").index(".foo");
+        var foo = $ul.find(".foo").index();
+        console.log(err, "/", foo);
+    });
+</script>
+</html>

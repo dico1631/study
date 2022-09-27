@@ -1,0 +1,45 @@
+@charset "utf-8";
+/*
+    2022년 ver1 - 작업자 심민아 - UI팀 control.css 샘플 - 반응형용
+*/
+
+/*
+공통 필수 세팅값 - 삭제는 불가, 무조건 공통값 세팅이 필요함 - 프로젝트마다 상이할수있으므로 각 속성값 세팅
+ ** 함부로 수정 시 홈페이지 전체가 틀어집니다. **
+ */
+ input::placeholder{color: #B5B6BA;opacity: 1; /* 파이어폭스에서 뿌옇게 나오는 현상을 방지하기 위한 css */}
+ 
+ 
+
+ input::-webkit-input-placeholder{color: #B5B6BA;}
+ 
+ 
+ 
+ input:-ms-input-placeholder{color: #B5B6BA;}
+ 
+ 
+
+ input:focus::-webkit-input-placeholder,textarea:focus::-webkit-input-placeholder{color:transparent;}
+ 
+
+
+ 
+ input:focus:-moz-placeholder,textarea:focus:-moz-placeholder{color:transparent;}
+ 
+
+
+ 
+ input:focus:-ms-input-placeholder,textarea:focus:-ms-input-placeholder{color:transparent;}
+ 
+
+ 
+ 
+ input:-internal-autofill-selected {background: transparent !important;}
+ 
+ 
+
+ input[type='password']{font-size: 20px;letter-spacing: 2px;}
+
+
+
+/*공통 필수 세팅값 끝 */

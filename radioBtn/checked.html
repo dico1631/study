@@ -1,0 +1,17 @@
+<input class="radioBtn" name="list" type="radio"value="1">
+<input class="textBox" type="text" disabled>
+<input class="radioBtn" name="list" type="radio" value="2">
+<input class="textBox" type="text" disabled>
+<input class="radioBtn" name="list" type="radio" value="3">
+<input class="radioBtn" name="list" type="radio" value="4">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    $(".radioBtn").click(function(){
+        $(".textBox").attr("disabled", true);
+        $(this).next(".textBox").attr("disabled", false);
+    });
+});
+</script>

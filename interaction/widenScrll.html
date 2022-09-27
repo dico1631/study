@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<style>
+    /* .intrctn{display: inline-flex; justify-content: center; align-items: center; width: 100%; height: 400px;} */
+    .temp{display: inline-block; float: left; width: 100%; height: 1440px; background-color: antiquewhite;}
+    .bx{position: relative; display: inline-flex; justify-content: center; align-items: center; width: 100%; height: 500px; background: url("plnngSrvcBckImg2.jpg") no-repeat center; background-size: cover; overflow-x: hidden;}
+    .txt{display: inline-flex; justify-content: center; align-items: center; width: 100%; height: 100%; font-size: 55px; color: aliceblue; font-weight: 700; background: rgba(40,40,40,0.4); }
+    .whtBx{position: absolute; top: 0; display: inline-block; float: left; width: calc((100% - 150px) / 2); height: 100%; background: #fff;}
+        .whtBx._lft{left: 0;}
+        .whtBx._rght{right: 0;}
+
+</style>
+
+<body>
+    <div class="temp"></div>
+
+    <div class="bx">
+        <span class="txt">first</span>
+        <div class="whtBx _lft"></div>
+        <div class="whtBx _rght"></div>
+    </div>
+
+    <div class="temp"></div>
+</body>
+<script>
+    function scrllShw(){
+        var $lftWhtBx = $(".whtBx._lft");
+        var $rghtWhtBx = $(".whtBx._rght");
+        var $target = $(".bx");
+
+        $(window).scroll(function(){
+            var $scrllTop = $(window).scrollTop();
+            var mv = 1/8 * $scrllTop - 80;
+            $lftWhtBx.css('transform', 'translate3d('+ (-1 * mv) +'%, 0px, 0px)');
+            $rghtWhtBx.css('transform', 'translate3d('+ mv +'%, 0px, 0px)');
+        });
+    }
+
+    $(function(){
+        scrllShw();
+    });
+
+</script>
+</html>

@@ -1,0 +1,61 @@
+<style>
+    .dfSld4 {
+        position: relative;
+        display: inline-block;
+        float: left;
+        width: 100px;
+        height: 30px;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .chk{
+        display: none;
+    }
+
+    .dfSld4::before{
+        content: "";
+        position: absolute;
+        display: inline-block;
+        float: left;
+        width: 100%;
+        height: 100%;
+        border: #bbbaba 1px solid;
+        border-radius: 999px;
+        background: #d4d4d4;
+        box-sizing: border-box;
+        transition: 0.5s;
+    }
+    
+    .dfSld4::after{
+        content: "";
+        position: absolute;
+        left: 0px;
+        display: inline-block;
+        float: left;
+        width: 26px;
+        height: 26px;
+        margin: 2px;
+        border: #bbbaba 1px solid;
+        border-radius: 999px;
+        background: #ececec;
+        box-sizing: border-box;
+    }
+
+    .chk:checked + .dfSld4::after{
+        left: unset;
+        right: 0px;
+        
+    }
+    .chk:checked + .dfSld4::before{
+        background: #0d66d5;
+    }
+</style>
+
+
+<input type="checkbox" class="chk" id="sldBtn1"></input>
+<label class="dfSld4" for="sldBtn1"></label>
+
+
+<!--<input type="checkbox" class="chk" id="sldBtn1">
+    <label class="dfSld4" for="sldBtn1"></label>
+</input> -->

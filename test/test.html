@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script>
+        function copyClipboard() {
+            $(".address").click(function(){
+                var $address = $(this);
+                console.log($address.text());
+                navigator.clipboard.writeText($address.text());
+                toastPopup("text"); //모바일이면
+            });
+        };
+
+        function toastPopup(text){
+            $('.toastPop').addClass('move');
+            setTimeout(() => {$('.toastPop').removeClass('move')}, 1500);
+        };
+        $(document).ready(function(){
+            copyClipboard();
+        });
+    </script>
+    <style>
+        .toastPop{
+            position: absolute;
+            bottom: 0px;
+            left: calc((100% - 260px) / 2);
+            display: inline-block;
+            float: left;
+            width: 260px;
+            height: 40px;
+            padding: 10px 0;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: white;
+            text-align: center;
+            border-radius: 20px;
+            background-color: #3C3C3C;
+            opacity: 0;
+            transition: all 1s;
+        }
+        .toastPop.move{
+            transform: translateY(-30px);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body> 
+    <aside class="toastPop ">주소가 복사되었습니다</aside>
+    <h1>매장안내</h1>
+    <!-- 검색&리스트 -->
+    <nav>
+        <ul>
+            <li>
+                <h2>직접검색</h2>
+                <h2>지역검색</h2>
+            </li>
+            <li>
+                <input type="text">
+            </li>
+            <li>
+                <label for="prmshp chck">Premium Shop</label><input id="prmshp" type="checkbox">
+                <label for="bstshp chck">Brand Shop</label><input id="bstshp" type="checkbox">
+                <button class="tltip">?</button>
+            </li>
+            <li>
+                <span class="srchNum">3개의 일룸 매장이 검색되었습니다.</span>
+                <button type="button">검색초기화</button>  
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <span>Premium Shop</span>
+                <a>프리미엄샵 오금</a> <!-- after '>' 이미지 추가 -->
+                <span>리뉴얼중</span>
+                <address>
+                    <span class="address">서울특별시 송파구 오금로 311</span> <!-- 모바일에서만 토스트 팝업 -->
+                    <a href="tel:02-470-4100">02-470-4100</a>  <!-- PC에서는 전화걸기 기능 없애기 -->
+                </address>
+            </li>
+        </ul>
+    </nav>
+    <!-- 지도영역: 그대로 사용 -->
+    <div></div>
+
+    <dl>
+        <dt>Premium Shop</dt>
+        <dd>일룸의 브랜드 아이덴티티를 경험할 수 있는 직영 매장입니다.</dd>
+        <dt>Brand Shop</dt>
+        <dd>일룸의 다양한 제품을 만날 수 있는 표준 매장입니다</dd>
+    </dl>
+
+    <article>
+        <!-- 관리자에서 업로드 할 것: url, img의 src, img의 alt(배너 title) -->
+          <a href="https://vr.iloom.com/intro/index.html"><img src="/img/front/store/shop_bnnr_VR.png" alt="디지털 쇼룸 배너"></a>
+          <a href="https://www.iloom.com/lifestyle/view.do?lsCode=LSP210800005"><img src="/img/front/store/shop_bnnr_VR.png" alt="일룸 매장 소식 배너"></a>
+    </article>
+</body>
+</html>

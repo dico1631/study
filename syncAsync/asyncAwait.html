@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    
+    <style>
+        .mainpop{display: none; float: left;}
+        .openPop{display: inline-block;}
+        .red{border: rgb(252, 87, 87) 2px solid; background-color: rgb(252, 87, 87);}
+        .blue{border: cornflowerblue 2px solid; background-color: cornflowerblue;}
+    </style>
+    </style>
+    
+    
+    <script>
+        function openPop(){
+            
+        };
+        
+        function close(){
+            $(".closeBtn").on("click", function(){
+                $closeBtn = $(this);
+                $popupFrame = $closeBtn.parent();
+                $popupFrame.removeClass("openPop");
+            });
+        };
+        $(document).ready(function () {
+            console.log("시작");
+            close();
+            openPop();
+        });
+    </script>
+</head>
+<body>
+    <aside class="mainpop blue openPop" id="order1" style="width: 100px; height: 100px;"> 
+        <span class="closeBtn">끄기</span>
+    </aside>
+
+    <aside class="mainpop red openPop" id="order2" style="width: 200px; height: 200px;"> 
+        <span class="closeBtn">끄기</span>
+    </aside>
+</body>
+</html>

@@ -1,0 +1,52 @@
+@charset "utf-8";
+/*
+    2022년 ver1 - 작업자 심민아 - UI팀 common.css 샘플 - 반응형용
+*/
+
+/*
+공통 필수 세팅값 - 삭제는 불가, 무조건 공통값 세팅이 필요함 - 프로젝트마다 상이할수있으므로 각 속성값 세팅
+ ** 함부로 수정 시 홈페이지 전체가 틀어집니다. **
+ */
+body,th,td,input,select,textarea,button,li,dt,dd, nav a, nav button,h1,h2,h3,h4,h5,h6{font-size:14px; line-height:18px; font-family:'TTNorms','Noto Sans KR',sans-serif, dotum, '돋움';color:#484848;letter-spacing: -0.52px;}
+
+
+body{-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;background: #fff;}
+
+
+th,td,li,dt,dd,a {-webkit-user-select: text;-moz-user-select: text;-ms-user-select: text;user-select: text;}
+
+
+a{color:#484848; text-decoration:none;}
+
+
+a:active, a:hover{text-decoration: none;color:#9e7413;}
+
+
+address,caption,cite,code,dfn,em,var{font-style:normal; font-weight:normal;}
+
+
+ins{/*background-color:#ff9;color:#000;*/text-decoration:none;}
+
+
+mark, strong{background-color:transparent; font-weight:500;}
+
+
+del{text-decoration: line-through;}
+
+
+abbr[title], dfn[title]{border-bottom:1px dotted; cursor:help;}
+
+
+hr{height:1px; border:0;margin:1em 0; padding:0;}
+
+
+menu li{cursor: pointer;}
+
+
+::-moz-selection {background-color: #7dedff;text-shadow: none;}
+
+
+::selection {background-color: #7dedff;;text-shadow: none;}
+
+
+/*공통 필수 세팅값 끝 */
