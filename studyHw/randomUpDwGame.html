@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="randomUpDwGame.css">
+    <script type="text/javascript" src="randomUpDwGame.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1 class="ttl">랜덤 UP/Down!</h1>
+    <section class="cntntBx">
+        <section class="dfFlxBx lvBx">
+            <h2 class="dfBx lvTtl">hard</h2>
+            <span class="TxtBtn _blue lvBtn">easy로 바꾸기</span>
+        </section>
+        <input type="text" class="txtInptBx usrInpt"/>
+        <input type="button" value="입력" class="btn setInpt">
+        <span class="TxtBtn _blue">포기할래?ㅋㅋㅋ</span>
+    </section>
+    
+    <!-- 답란 -->
+    <section class="cntntBx">
+        <dl class="">
+            <dt class="hrdLv" class="">남은횟수:</dt>
+            <dd class="hrdLv" class="">5회</dd>
+            <dt class="">입력수</dt>
+            <dd class="">up/down</dd>
+        </dl>
+        <dl class="">
+            <dt class="">정답</dt>
+            <dd class="">55</dd>
+            <dt class="">도전횟수:</dt>
+            <dd class="">5회</dd>
+        </dl>
+        <hr class=""/>
+    </section>
+
+    <!-- history -->
+    <section class="cntntBx">
+        <h2 class="easyLv">history 보기</h2>
+        <dl class="easyLv">
+            <dt class="">숫자</dt>
+            <dd class="">up/down</dd>
+        </dl>
+    </section>
+</body>
+<script>
+    getUserInput();
+</script>
+</html>

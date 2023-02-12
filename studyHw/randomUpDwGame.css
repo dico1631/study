@@ -1,0 +1,33 @@
+/* layout.css */
+.dfBx{display: inline-block;float: left;}
+.dfFllBx{display: inline-block;float: left;width: 100%;}
+.dfHlfBx{display: inline-block;float: left;width: 50%;}
+.dfFlxBx{display: inline-flex;float: left;width: 100%;flex-direction: row;justify-content: center;}
+
+.cntntBx{display: block;float: left;width: 100%;max-width: 720px; margin: 0 calc(50% - 360px);padding: 20px 40px;background-color: aliceblue;box-sizing: border-box;}
+
+/* control.css */
+.btn{display: inline-block;float: left;width: 55px;height: 25px;font-size: 15px;background-color: #ccc;box-sizing: border-box;}
+
+.TxtBtn{display: inline-block;float: left;font-size: 15px;line-height: 15px;color:#353535;}
+    .TxtBtn._blue{color: rgb(41, 41, 171);}
+
+.txtInptBx{display: inline-block;
+    float: left;
+    width: 200px;
+    height: 25px;
+    box-sizing: border-box;}
+
+/* common.css */
+.ttl{
+    display: inline-block;
+    float: left;
+    width: 100%;
+    text-align: center;  
+    margin: 50px 0 50px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+/* pageStyle.css */
