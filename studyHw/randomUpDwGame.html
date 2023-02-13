@@ -12,42 +12,50 @@
 <body>
     <h1 class="ttl">랜덤 UP/Down!</h1>
     <section class="cntntBx">
-        <section class="dfFlxBx lvBx">
-            <h2 class="dfBx lvTtl">hard</h2>
-            <span class="TxtBtn _blue lvBtn">easy로 바꾸기</span>
+        <section class="dfFlxBx lvBx" style="margin-bottom: 15px;">
+            <input type="radio" name="lvl" id="easyLvl" value="easy" checked="checked" onclick="setLevel(event)"/><label for="easyLvl">easy</label>
+            <input type="radio" name="lvl" id="hardLvl" value="hard" onclick="setLevel(event)"/><label for="hardLvl">hard</label>
         </section>
-        <input type="text" class="txtInptBx usrInpt"/>
-        <input type="button" value="입력" class="btn setInpt">
-        <span class="TxtBtn _blue">포기할래?ㅋㅋㅋ</span>
+        <section class="dfFlxBx _jstfySpcBtwn">
+            <input type="text" class="txtInptBx usrInpt" onkeyup="enterkey()"/>
+            <input type="button" value="입력" class="btn setInpt">
+            <!-- <span class="TxtBtn _blue">포기할래?</span> -->
+            <span class="TxtBtn _blue retry" onclick="setLevel(event)">재시작</span>
+        </section>
     </section>
     
     <!-- 답란 -->
     <section class="cntntBx">
-        <dl class="">
-            <dt class="hrdLv" class="">남은횟수:</dt>
-            <dd class="hrdLv" class="">5회</dd>
-            <dt class="">입력수</dt>
-            <dd class="">up/down</dd>
+        <dl class="dfFllBx fnlBx">
+            <div class="dfFlxBx _jstfySpcBtwn">
+                <dt class="dfBx">정답</dt>
+                <dd class="dfBx answr"></dd>
+            </div>
+            <div class="dfFlxBx _jstfySpcBtwn fail">
+                <dt class="dfBx">도전횟수:</dt>
+                <dd class="dfBx cnt"></dd>
+            </div>
         </dl>
-        <dl class="">
-            <dt class="">정답</dt>
-            <dd class="">55</dd>
-            <dt class="">도전횟수:</dt>
-            <dd class="">5회</dd>
+        <dl class="dfFllBx nwBx">
+            <div class="dfFlxBx _jstfySpcBtwn">
+                <dt class="dfBx hrdLv">남은횟수:</dt>
+                <dd class="dfBx hrdLv cntLmt rcrd"></dd>
+            </div>
+            <div class="dfFlxBx _jstfySpcBtwn">
+                <dt class="dfBx usrNum"></dt>
+                <dd class="dfBx rslt"></dd>
+            </div>
         </dl>
-        <hr class=""/>
     </section>
 
     <!-- history -->
-    <section class="cntntBx">
-        <h2 class="easyLv">history 보기</h2>
-        <dl class="easyLv">
-            <dt class="">숫자</dt>
-            <dd class="">up/down</dd>
-        </dl>
+    <section class="cntntBx easyLv on hstryBx">
+        <hr/>
+        <span class="ttl">history</span>
     </section>
 </body>
 <script>
     getUserInput();
+    $('.cntLmt').text(`${COUNT_LIMIT}회`);
 </script>
 </html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
+<style>
+    .popup{display: none; float: left; width: 300px; height: 300px;}
+    .popup.show{display: inline-block;}
+    .close{display: inline-block; float: left; width: 100%;background-color:aqua;}
+</style>
+
+<body>
+    <div class="popup type1" style="background-color: bisque;">1
+        <span class="close">X</span>
+    </div>
+    <div class="popup type2" style="background-color:aquamarine;">2
+        <span class="close">X</span>
+    </div>
+    <div class="popup type3" style="background-color: yellowgreen;">3
+        <span class="close">X</span>
+    </div>
+</body>
+
+<script>
+function type1(e){
+    console.log(e);
+    e.addClass('show');
+}
+
+function type2(e){
+    console.log(e);
+    e.addClass('show');
+}
+
+function type3(e){
+    console.log(e);
+    e.addClass('show');
+}
+
+function popup(){
+    //예시용 배열 세팅 시작
+    var popup = $('.popup').toArray();
+    popup.unshift(''); //배열 처음에 공백 넣기
+    popup.splice(2, 0, '', ''); //배열 중간에 공백 넣기 (idx 2부터 '' 2개 넣음)
+    popup.push(''); //배열 끝에 공백 넣기
+    console.log(popup); //완성된 배열 출력
+    //예시용 배열 세팅 끝
+
+    var e, popup_type = ""; //while에 무조건 1번은 들어감
+
+    while(!popup_type && (popup.length != 0)){
+        console.log("no e");
+        e = $(popup.shift());
+        popup_type = e.attr('class');
+    }
+    callOpenPopFuntion(popup_type, e);
+
+    $(document).on("click", e.children('.close'), function(){
+        console.log("---");
+        console.log(popup);
+        e.removeClass('show');
+        e = $(popup.shift());
+        popup_type = e.attr('class');
+        while(!popup_type && (popup.length != 0)){
+            console.log("no e");
+            e = $(popup.shift());
+            popup_type = e.attr('class');
+        }
+        callOpenPopFuntion(popup_type, e);
+        console.log(popup);
+    });
+}
+
+function callOpenPopFuntion(popup_type, e){ //종류에 맞게 각 함수 실행
+    switch(popup_type){
+        case "popup type1":
+            type1(e);
+        break;
+        case "popup type2":
+            type2(e);
+        break;
+        case "popup type3":
+            type3(e);
+        break;
+    }
+}
+
+$(function(){
+    popup();
+});    
+</script>
+</html>

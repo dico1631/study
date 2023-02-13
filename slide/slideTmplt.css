@@ -1,0 +1,91 @@
+/*슬라이드-
+슬라이드 최대 갯수가 있는 형태 무한 갯수일때 리스트와 슬라이드각 객체 넓이 구성 추가가 필요함
+- 기본 슬라이드는 디자인이 입혀있지 않고 최소한의 필요 구성만 되어있음-때문에 함부로 수정하거나,변경금지
+아래 /슬라이드 디자인별 구성/에서 각 디자인에따라 모듈화해서 구성
+ - 전체박스 여백은 부모자 혹은 페이지종속을 통해 따로 구성
+*/
+.slideCntntsBox{display: inline-block;float: left;width: 100%;}
+.slideCntntsBox._outBtn60,.slideCntntsBox._outBtn40,.slideCntntsBox._outBtn30{position: relative;}
+.slideImgBx{position: relative;display: block;width: 100%;height: 400px;padding: 0 20%;overflow-y: hidden;overflow-x: auto;box-sizing: border-box;}
+  .slideImgBx._fullSz{padding:0;}
+  .slideImgBx._inCaptn{height: 446px;}
+  ._inTchActn .slideImgBx{margin-left: 0;overflow-x:hidden;}
+.ovrsldBtn{display: none;}
+._outBtn30 {padding: 0 62px;box-sizing: border-box;}
+._outBtn40 {padding: 0 72px;box-sizing: border-box;}
+._outBtn60 {padding: 0 92px;box-sizing: border-box;}
+._outBtn60 .ovrsldBtn,._outBtn40 .ovrsldBtn,._outBtn30 .ovrsldBtn{position: absolute;top:calc(50% - 16px);display: block;width: 32px;height: 32px;font-size: 0;background-repeat: no-repeat;background-position: center;background-size:32px;}
+   ._outBtn30 .ovrsldBtn._prv,._outBtn40 .ovrsldBtn._prv,._outBtn60 .ovrsldBtn._prv{left: 0px;}
+   ._outBtn30 .ovrsldBtn._nxt,._outBtn40 .ovrsldBtn._nxt,._outBtn60 .ovrsldBtn._nxt{right:0px;}
+.ovrsldBtn._prv.dsble, .ovrsldBtn._nxt.dsble{opacity: 0.4;pointer-events: none;}
+._useBtn._sldRllng .ovrsldBtn._prv.dsble,._useBtn._sldRllng .ovrsldBtn._nxt.dsble,
+._useBtn._sldRllng .sldBtn.dsble{opacity:1;pointer-events: auto;}
+._nonSld .ovrsldBtn._prv,._nonSld .ovrsldBtn._nxt,
+._nonSld .sldBtn,._nonSld .sldInfBx{display: none !important;}
+/*기본5개 기준값-슬라이드 갯수에 따라 스크립트에서 넓이 조절됌- 풀사이즈가 아닌경우의여백에 따른 20px은 컬쳐앤액티비티슬라이드 기준에 따라 변경될예정*/
+.slideImgBx._fullSz .slideImgLst{width: calc(100%*5);}
+.slideImgBx._fullSz .slideImgLst._1{width:100%;}
+.slideImgLst{position: absolute;display: inline-flex;min-width: fit-content;width: calc(60%*5);height:100%;transition: 0.2s;}
+    .slideImgLst._1{width: 60%;}/*1개일때 제외*/
+ .slideImgLst .imgbfr, .slideImgLst .imgaftr{display: none;}
+ /*앞뒤부분의 넓이, 위치도 5개 기준 슬라이드 기준에 따라 스크립트에서 변경*/
+ ._lstinfrst .slideImgLst .imgbfr,._lstinfrst .slideImgLst .imgaftr{display: block;position: absolute;width: calc(100%/5 - 16px);height: 100%;background-color: #eee;}
+      ._lstinfrst .slideImgLst .imgbfr > img ,
+      ._lstinfrst .slideImgLst .imgaftr > img{position: absolute;display: block;width: 100%;height: auto;}
+      ._lstinfrst .slideImgLst  .imgbfr{left:calc(-100%/5);margin-right: 10px;background-image: attr(data-fstUrl url);}
+      ._lstinfrst .slideImgLst  .imgaftr{right:calc(-100%/5);margin-left: 10px;background-image: attr(data-lstUrl url);}
+/*풀사이즈가 아닌경우의여백에 따른 16px은 컬쳐앤액티비티슬라이드 기준에 따라 변경될예정*/
+ .slideImgLst .sldImgBx{position: relative;display: flex;align-items: center;justify-content: center;width: calc(100%/5);height: 100%;padding: 0 10px;overflow: hidden;cursor:pointer;box-sizing: border-box;}
+ .slideImgLst .sldImgBx > img{position: absolute;display: block;width:calc(100% - 20px);height: auto;background-color: #eee;}
+ .slideImgBx._fullSz .slideImgLst .sldImgBx{padding: 0;}
+ .slideImgBx._fullSz .slideImgLst .sldImgBx > img{width:100%;}
+ /*기본5개 기준값-슬라이드 갯수에 따라 스크립트에서 넓이 조절됌*/
+       .slideImgBx._fullSz .sldImgBx{width: calc(100%/5);margin-right:0px;}
+          .slideImgBx._fullSz .slideImgLst._1 .sldImgBx{width:100%;}
+       ._useBtn .slideImgLst .sldImgBx{cursor:default;}
+  .slideImgLst .sldImgBx.lst{margin-right: 0px;}
+  .sldInfBx{display: inline-block;float: left;width: 100%;}
+     .sldBtn{display:none;}
+     ._useBtn .sldBtn{position: absolute;top:calc(50% - 16px);display: block;width: 32px;height: 32px;font-size: 0;background-repeat: no-repeat;background-position: center;background-size:32px;z-index: 800;opacity:1;}
+        ._useBtn .sldBtn._prv{left: 0;}
+        ._useBtn .sldBtn._nxt{right: 0;}
+        ._useBtn._outBtn30 .sldBtn._prv{left: -30px;}
+        ._useBtn._outBtn30 .sldBtn._nxt{right: -30px;}
+        ._useBtn._outBtn40 .sldBtn._prv{left: -40px;}
+        ._useBtn._outBtn40 .sldBtn._nxt{right: -40px;}
+        ._useBtn._outBtn60 .sldBtn._prv{left: -60px;}
+        ._useBtn._outBtn60 .sldBtn._nxt{right: -60px;}
+     ._useBtn .sldBtn.dsble{opacity: 0.4;pointer-events: none;}
+
+.slideCntntsBox .imgInfCptnVwTxt{display: inline-block;float: left;width: 100%;line-height: 24px;text-align: center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+.slideCntntsBox._inSbimgLst{padding-bottom: 120px;}
+.slideCntntsBox._inSbimgLst .sldInfBx{position: absolute;display: flex;align-items: flex-end;justify-content: center;left: 0px;bottom: 0px;width: 100%;height: 90px;}
+   .slideCntntsBox._inSbimgLst .sld_inSbimgLst{display: inline-block;float: left;}
+     .sld_inSbimgLst._ovrLng{width: 100%;}
+     ._useBtn._outBtn30 .sld_inSbimgLst._ovrLng{width:calc(100% - 62px);}
+     ._useBtn._outBtn40 .sld_inSbimgLst._ovrLng{width:calc(100% - 72px);}
+     ._useBtn._outBtn60 .sld_inSbimgLst._ovrLng{width:calc(100% - 92px);}
+     .slideCntntsBox._inSbimgLst .sld_inSbimgLst .inSbimg{display: inline-block;float: left;width: 90px;margin: 0 4px;box-sizing: border-box;}
+     .sld_inSbimgLst .inSbimg.on{border: #000 1px solid;}
+     .sld_inSbimgLst .inSbimg .imgInfCptn{display: none;}
+     .sld_inSbimgLst .inSbimg .img{width: 100%;overflow: hidden;background-color: #eee;}
+     .sld_inSbimgLst .inSbimg .img img{position: absolute;width: 100%;height: auto;}
+
+
+  .slideImgBx::-webkit-scrollbar{width: 0px;height: 0px;-webkit-border-radius: 0px; border-radius:0px; }
+  .slideImgBx::-webkit-scrollbar-track{background:transparent;}
+  .slideImgBx::-webkit-scrollbar-track:hover{background:transparent;}
+  .slideImgBx::-webkit-scrollbar-thumb{background: transparent;-webkit-border-radius: 0px; border-radius:4px;}
+  .slideImgBx::-webkit-scrollbar-thumb:hover{background: transparent;-webkit-border-radius: 0px; border-radius:4px;}
+  /*모질라*/
+  .slideImgBx{scrollbar-color: #bbb rgba(170, 170, 170,0);scrollbar-width:0;}
+  .slideImgBx:hover{scrollbar-color: #555 rgba(170, 170, 170,0);scrollbar-width:0;}
+
+/*슬라이드 디자인별 구성*/
+   /*하단 이미지 리스트형 - 예 :상품상세페이지*/
+   .dfSbSmllBx._inSldCntnt .sld_inSbimgLst .inSbimg{background-color: #fff;}
+   .dfSbSmllBx._inSldCntnt .sld_inSbimgLst .inSbimg .img{background-color: transparent;}
+   .dfSbSmllBx._inSldCntnt .ovrsldBtn._prv,
+   .dfSbSmllBx._inSldCntnt .sldBtn._prv{background-image: url('/img/user/icn_prv_noLn.svg');}
+   .dfSbSmllBx._inSldCntnt .ovrsldBtn._nxt,
+   .dfSbSmllBx._inSldCntnt .sldBtn._nxt{background-image: url('/img/user/icn_nxt_noLn.svg');}
