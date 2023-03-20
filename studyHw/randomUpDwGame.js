@@ -1,8 +1,8 @@
 const MIN = 1;
 const MAX = 100;
 const COUNT_LIMIT = 5;
-let answer = Math.floor(Math.random() * MAX) + MIN;
 let count = 0;
+let answer = MIN - 1;
 
 function gameReset(){
     answer = Math.floor(Math.random() * MAX) + MIN;
@@ -78,7 +78,7 @@ function getUserInput(){
             if((COUNT_LIMIT - count) <= 0){
                 alert("실패!!");
                 $('.fnlBx').addClass('on');
-                $('.fnlBx .answr').text(ANSWER);
+                $('.fnlBx .answr').text(answer);
                 $('.fnlBx .fail').addClass('off');
                 $('.hstryBx').addClass('on');
             }
@@ -86,13 +86,13 @@ function getUserInput(){
         //game logic
         $('.cntLmt').text(`${COUNT_LIMIT - count}회`);
         $('.nwBx .usrNum').text(userVal);
-        if(userVal > ANSWER){
+        if(userVal > answer){
             $('.nwBx .rslt').text("DOWN");
-        }else if(userVal < ANSWER){
+        }else if(userVal < answer){
             $('.nwBx .rslt').text("UP");
         }else{
             $('.fnlBx').addClass('on');
-            $('.fnlBx .answr').text(ANSWER);
+            $('.fnlBx .answr').text(answer);
             $('.fnlBx .cnt').text(`${count}회`);
             $('.hstryBx').addClass('on');
             alert("정답입니다!");
