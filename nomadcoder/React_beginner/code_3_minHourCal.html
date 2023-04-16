@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body id="root"></body>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+  const root = document.getElementById("root");
+
+  const App = () => {
+    const [amount, setAmount] = React.useState(0);
+    const [flipped, setFlipped] = React.useState(false);
+
+    const onChange = (e) => setAmount(e.target.value);
+    const reset = () =>  setAmount(0);
+    const onFlip = () => {
+      reset();
+      setFlipped((current) => !current);
+    };
+
+    return (
+      <div>
+        <h1 className="title">Super Converter</h1>
+        <div>
+          <label htmlFor="minutes">minutes</label>
+          {/*not flipped = 분을 입력하겠다.*/}
+          <input id="minutes" type="number" value={flipped ? amount * 60 : amount} placholder="minutes" onChange={onChange} disabled={flipped}/>
+          </div>
+          <div>
+            <label htmlFor="hours">hours</label>
+            <input id="hours" type="number" value={flipped ? amount : Math.round(amount / 60)} placholder="hours" onChange={onChange} disabled={!flipped}/>
+          </div>
+          <button onClick={reset}>reset</button>  
+          <button onClick={onFlip}>{flipped ? "분 입력하기" : "시 입력하기"}</button>  
+      </div>
+    )
+  }
+
+  //render
+  ReactDOM.render(<App />, root);
+</script>
+
+</html>
