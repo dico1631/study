@@ -9,10 +9,6 @@ class User {
     showName22(){
         console.log(this.name);
     }
-
-    showName22(color){
-        console.log(color);
-    }
 }
 
 class BB extends User{

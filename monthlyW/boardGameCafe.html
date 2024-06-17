@@ -6,60 +6,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    .flxBx{display: inline-flex;}
+        .flxBx ._col{flex-direction: column;}
+        .flxBx ._spcBtwn{justify-content: space-between;}
+</style>
 <body>
-    <!-- ��/�ⱸ -->
-    <h1>����� ������� ī��</h1>
+    <!-- 입/출구 -->
+    <h1>히어로 보드게임 카페</h1>
 
-    <section>
+    <!-- 주문 구역 -->
+    <section class="foodZone">
+
+        <!-- 메뉴판 -->
         <menu>
-            <h2>HERO MENU</h2>
-            <!-- �޴� ������ ���� -->
+            <h2>MENU</h2>
+            <!-- 메뉴 여러개 있음(h3, dl) -->
             <h3>BEVERAGE<span>hot&cold</span></h3>
             <dl>
-                <dt>�Ƹ޸�ī��</dt>
+                <dt>아메리카노</dt>
                 <dd>4.0</dd>
+                <dt>라떼</dt>
+                <dd>4.5</dd>
+                <dt>바닐라라떼</dt>
+                <dd>4.5</dd>
+                <dt>카페모카</dt>
+                <dd>4.5</dd>
             </dl>
         </menu>
-        <article>ī����</article>
+
+        <!-- 카운터 -->
+        <section>
+            <article>
+                <h3>대기명단</h3>
+                <dl>
+                    <dt>성함</dt>
+                    <dd>전화번호</dd>
+                </dl>
+            </article>
+
+            <article>
+                <h2>음식 받는 곳</h2>
+
+                <!-- 진동벨 케이스 -->
+                <article>
+                    <article>
+                        <h3>진동벨1</h3>
+                    </article>
+                    <article>
+                        <h3>진동벨2</h3>
+                    </article>
+                </article>
+
+                <article>쟁반</article>
+            </article>
+
+            <article>
+                <h2>주문하는 곳</h2>
+                <!-- import pos.html -->
+            </article>
+
+            <article>책상</article>
+        </section>
+
+        <!-- 주방 -->
+        <a href="/kitchen"></a>
     </section>
 
-    <section>
-        <article>���Ϻ�</article>
+    <!-- 게임 구역 -->
+    <section class="gameZone">
+
+        <!-- 포켓볼(1개) -->
+        <!-- 큐대: 포인터 -->
         <section>
-            <!-- ������ 3�� -->
-            <article>������</article>
+            <article class="table">            
+                <ol class="fllBall">
+                    <!-- 치는 공 -->
+                    <li class="trgtBall">1</li>
+                    <!-- 팀1: 색깔 공(2-7) -->
+                    <li class="fllBall">2</li>
+                    <li class="fllBall">7</li>
+                    <!-- 엔드볼 -->
+                    <li class="endBall">8</li>
+                    <!-- 팀2 : 줄무늬 공(9-15) -->
+                    <li class="strpBall">9</li>
+                    <li class="strpBall">15</li>
+                </ol>
+                <article>초크</article>
+            </article>
+
+            <article class="score">
+                <!-- 5:3 -->
+                <h3>점수판</h3>
+                <span>5</span>
+                <span>3</span>
+            </article>
         </section>
+
+        <section>
+            <!-- 오락기+의자 세트(3개) -->
+            <section>
+                <article>
+                    <!-- 게임 화면 -->
+                    <menu>
+                        <h3>게임을 선택하세요.</h3>
+                        <ul>
+                            <li><a href="/game/id=아이디">게임명</a></li>
+                            <li><a href="/game/id=아이디">게임명</a></li>
+                            <li><a href="/game/id=아이디">게임명</a></li>
+                        </ul>
+                    </menu>
+                    <!-- 유저1 조작 -->
+                    <section>
+                        <button>버튼1</button>
+                        <button>버튼2</button>
+                        <button>버튼3</button>
+                        <ul>
+                            <li><button>상</button></li>
+                            <li><button>하</button></li>
+                            <li><button>좌</button></li>
+                            <li><button>우</button></li>
+                        </ul>
+                    </section>
+                    <!-- 유저2 조작 -->
+                    <section>
+                        <button>버튼1</button>
+                        <button>버튼2</button>
+                        <button>버튼3</button>
+                        <ul>
+                            <li><button>상</button></li>
+                            <li><button>하</button></li>
+                            <li><button>좌</button></li>
+                            <li><button>우</button></li>
+                        </ul>
+                    </section>
+                </article>
+
+                <article>의자</article>
+            </section>
+        </section>
+
+        <!-- 보드게임(많음, 가나다순 정렬) -->
         <menu>
-            <h2>������� zone</h2>
+            <h2>보드게임 zone</h2>
+
+            <!-- 보드게임 구분 및 게임들 여러 개(h3, ul) -->
+            <h3>가</h3>
+            <ul>
+                <!-- 게임 1개(같은 형식으로 여러 개 존재) -->
+                <dl>
+                    <dt>보드게임 뱅</dt>
+                    <dd>
+                        <dl>
+                            <dt>권장인원수</dt>
+                            <dd>4-6명</dd>
+                            <dt>장르</dt>
+                            <dd>서바이벌</dd>
+                            <dt>간단 설명</dt>
+                            <dd>서부를 배경으로 하는 보드게임</dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </ul>
+
         </menu>
     </section>
 
-    <section>
-        <!-- ���� ���� 4�� -->
-        <section>
+    <!-- 방 구역 -->
+    <section class="flxBx _spcBtwn roomZone">
+
+        <!-- 굴방 섹션 (방 4개) -->
+        <section class="flxBx">
+            <section class="flxBx _col">
+                <article>
+                    <h2>굴방 1-1</h2>
+                </article>
+                <article>
+                    <h2>굴방 1-2</h2>
+                </article>
+            </section>
+        </section>
+
+        <!-- 테이블방 섹션 (방 4개) -->
+        <section class="flxBx">
             <article>
-                <h2>���� 1-1</h2>
-            </article>
-            <article>
-                <h2>���� 1-2</h2>
+                <h2>테이블방 1</h2>
+                <a href="/tableRoom/num=1"></a>
             </article>
         </section>
-    </section>
 
-    <section>
-        <!-- ���̺��� 4�� -->
-        <article>
-            <h2>���̺��� 1</h2>
-        </article>
-    </section>
-
-    <section>
-        <!-- ���� ���� 2�� -->
-
-        <!-- ȭ��� 2�� -->
-        <article>
-            <h2>����ȭ���</h2>
-        </article>
+        <!-- 굴방 섹션 (방 2개, 화장실) -->
+        <section class="flxBx">
+            
+            <h2>화장실</h2>
+            <a href="/toliet/type=M"></a>
+            <a href="/toliet/type=F"></a>
+        </section>
     </section>
 </body>
 </html>
+
+
+
