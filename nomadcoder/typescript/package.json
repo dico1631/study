@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+  // "scripts": {
+  //   "run": "npx ts-node [경로]"
+  // }
+}

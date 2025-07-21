@@ -1,0 +1,591 @@
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+		<style>
+			.hover_bg_gray {
+				border:2px solid white;
+			}
+			.hover_bg_gray:hover {
+				border-color:gray;
+				cursor:hand;
+			}
+			.tooltip_newline:empty {
+				display:none;
+			}
+			[data-bs-toggle=tooltip][title] {
+				display:none;
+			}
+		</style>
+		<script>
+			(function($, document, window, undefined) {
+				"use strict";
+
+				var pluginName = "TemplateEditor";
+				
+				var _defaults = {};
+                
+                var _template_dict = {};
+				
+				// JQuery Selector 생성
+				function sel(attr_name, value) {
+					if (typeof value !== undefined && value == null) {
+						return "[" + attr_name + "]";
+					}else {
+						return "[" + attr_name + "=" + value + "]";
+					}
+				}
+
+				// UUID 생성
+				function get_uuid() {
+					//return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+					return self.crypto.randomUUID();
+				}
+				
+				// 컴포넌트 블럭에 UUID 적용
+				function replace_for_id($component_block_root, component_keys) {
+					$(component_keys).each(function(component_key_idx, component_key){
+						// label과 input의 클릭 연결을 위해 유니크한 id 생성 후 적용
+						var for_id_component = get_uuid();
+						$component_block_root.find("[for="+component_key+"]").attr("for", for_id_component);
+						$component_block_root.find("[id="+component_key+"]").attr("id", for_id_component);
+						
+						var sort_type_list = $component_block_root.find("[data-sort-one]").map(function(sort_radio_idx, sort_radio){
+							return sort_radio.value;
+						}).get();
+						$([...new Set(sort_type_list)]).each(function(sort_typeidx, sort_type){
+							var for_id_sort = for_id_component + "_" + sort_type;
+							$component_block_root.find("[name="+component_key+"]").attr("name", for_id_component);
+							$component_block_root.find("[id="+component_key+"_"+sort_type+"]").attr("id", for_id_sort);
+							$component_block_root.find("[for="+component_key+"_"+sort_type+"]").attr("for", for_id_sort);
+						});
+					});
+					
+				}
+				
+				var _blk = {
+					tmp_list_root : 'data-template-list-root',
+					tmp_block_root : 'data-template-block-root',
+				}
+
+				function Plugin(element, options) {
+					this._element = element;
+					this._options = $.extend({}, _defaults, options)
+					this._$el = $(element);
+					this._init();
+				}
+
+				Plugin.prototype = {
+					_init : function() {
+						this._init_template_editor_layout();
+						this._get_template_dict_api();
+						this._init_selected_template_block();
+					},
+					
+					// 플러그인 기본 블럭 구조 초기화
+					_init_plugin_block : function() {
+						var plugin = this;
+						
+						plugin._$el.append(`
+							<div class="row mt-3 mb-3">
+								<div class="col-12" `+_blk.tmp_list_root+`></div>
+								<div class="row">
+									<div class="col-12" `+_blk.tmp_block_root+`>
+									</div>
+								</div>
+							</div>
+						`);
+					},
+					
+					// 템플릿 아이콘 영역 초기화
+					// 템플릿 아이콘 클릭시 템플릿 블럭 추가
+					_init_template_icon_list : function(){
+						var plugin = this;
+						// 템플릿 아이콘 추가
+						plugin._$icon_tag = $('<img data-template-id="" src="" class="hover_bg_gray" style="with:50px; height:50px;margin: 0 5 0 5;">')
+						// 클릭 이벤트 처리
+						.on("click", function(){
+							// 아이콘 변수 선언
+							var $template_icon = $(this);
+							// 템플릿 추가 영역 변수 선언
+							var $template_block_root = plugin._$el.find(sel(_blk.tmp_block_root));
+							// 템플릿 입력창 복제 변수 선언
+							var $article_template_clone = plugin._$article_template.clone(true);
+							
+							// 템플릿 ID 변수
+							var template_id = $template_icon.attr("data-template-id");
+							// 템플릿 정보 변수. data로 담는 방법이 있고 plugin이 가지고 있는 _template_dict 변수에서 template_id로 가져오는 방법이 있다.
+							var template_info = plugin._template_dict[template_id];
+							
+							// 템플릿 아이콘 적용
+							$article_template_clone.find("[data-template-icon]").append($template_icon.clone().css("width", "30px").css("height", "30px"));
+							
+							// 템플릿 정보 설정
+							$article_template_clone.find("[data-template-id]").attr("data-template-id", template_id);
+							$article_template_clone.find("[data-template-description]").text(template_info.description);
+							
+							
+							// 템플릿내 전체 정렬 radio버튼에 대한 for, id, name 설정
+							var for_id_template = get_uuid();
+							$article_template_clone.find("[data-sort-all]").each(function(sort_radio_idx, sort_radio){
+								var $sort_radio = $(sort_radio);
+								var sort_type = $sort_radio.val();
+								var for_id_sort = for_id_template + "_" + sort_type;
+								$sort_radio.attr("name", for_id_template).attr("id", for_id_sort);
+								$article_template_clone.find("[data-sort-all-label="+sort_type+"]").attr("for", for_id_sort);
+							});
+							
+							
+							// 템플릿 추가 영역에 선택한 템플릿 입력창 추가
+							$template_block_root.append($article_template_clone);
+							
+							var $article_block_body = $article_template_clone.find("[data-article-contents-root]");
+							
+							$template_icon.trigger("init_component_config", [$article_block_body, template_info.components]);
+							
+						}).on("init_component_config", function(e, $article_block_body, components){
+							// 아이콘 변수 선언
+							var $template_icon = $(this);
+							
+							// 입력항목 생성
+							$.each(components, function(component_key, component_config){
+								// 입력항목에 대한 label이 존재하면 라벨로 표시
+								var label = component_config.hasOwnProperty('label') ? component_config.label : '';
+								
+								// 입력 항목 변수 선언
+								var $component_block = plugin._$component_template_dict[component_config.type].clone(true);
+								var $component_label = $component_block.find("[data-component-label]");
+								var $component_input = $component_block.find("[data-component-key]").attr("data-component-key", component_key);
+								
+								// 필수값일 경우 화면 표시 및 속성 정의
+								if(component_config.required) {
+									$component_block.prepend(" * ");
+									$component_input.attr("data-required", component_config.required);
+								}
+								
+								// label과 input의 클릭 연결을 위해 일단 component_key를 설정하고 추후 replace_for_id함수를 통해 유니크한 id 적용
+								$component_label.attr("for", component_key).text(label);
+								$component_input.attr("id", component_key);
+								// 입력항목내 개별 정렬 radio버튼에 대한 for, id, name 설정
+								$component_block.find("[data-sort-one]").each(function(sort_radio_idx, sort_radio){
+									var $sort_radio = $(sort_radio);
+									var sort_type = $sort_radio.val();
+									var for_id_sort = component_key + "_" + sort_type;
+									$sort_radio.attr("name", component_key).attr("id", for_id_sort);
+									$component_block.find("[data-sort-one-label="+sort_type+"]").attr("for", for_id_sort);
+								});
+								
+								// 추가 입력 검증 정보가 있으면 설정 추가
+								if(component_config.validations) {
+									$component_input.data("validations", component_config.validations).attr("data-validation", true);
+								}
+								
+								// 가로 정렬 옵션이 있으면 설정 추가
+								if(component_config.align && component_config.align.horizontal) {
+									// 정렬 옵션 추가
+								}
+								
+								// 세로 정렬 옵션이 있으면 설정 추가
+								if(component_config.align && component_config.align.vertical) {
+									// 정렬 옵션 추가
+								}
+								
+								// 툴팁 노출 옵션이 있으면 설정 추가
+								if(component_config.tooltip) {
+									component_config.tooltip.forEach(function(tooltip_info){
+										switch(tooltip_info.type) {
+											case 'newline':
+												$component_block.find("[data-component-tooltip=newline]").text(tooltip_info.content);
+												break;
+											case 'popover':
+												// 레이어 띄우기
+												new bootstrap.Tooltip($component_block.find("[data-bs-toggle=tooltip]").attr("title", tooltip_info.content).get(0));
+												break;
+											case 'placeHolder':
+												// input 속성값으로 넣기
+												$component_input.attr("placeHolder", tooltip_info.content);
+												break;
+										}
+									});
+								}
+								
+								// 구성 완료 후 템플릿 추가 영역에 append
+								$article_block_body.append($component_block);
+								
+								if(component_config.type == 'group') {
+									$template_icon.trigger("init_component_config", [$component_block.find("[data-group-article-contents-root]"), component_config.items]);
+								}
+							});
+							
+							if($article_block_body.is("[data-group-article-contents-root]")) {
+								var $group_block_root = $article_block_body.closest("[data-component-type=group]");
+								$group_block_root.find("[data-group-append-btn]").data("group_append_template", $group_block_root.find("[data-group-append-template]").clone(true)).data("group_append_keys", Object.keys(components));
+							}
+							
+							// component_key로 치환한 for, id를 uuid로 변경 적용
+							// group 컴포넌트의 data-group-append-template data에 저장한 후 실행해야 한다. 만약 저장 전에 실행하면 새로 생성되는 group 내 component의 label, id가 꼬이게 됨
+							replace_for_id($article_block_body, Object.keys(components));
+						});
+					},
+
+					// 입력항목 작성 검증
+					_validate_articles : function(){
+						$("[data-required=true]").each(function(){
+							// 입력값 검증
+						});
+						
+						$("[data-validation=true]").each(function(){
+							var validations = $(this).data("validations");
+							/*
+							var validation_result = validation_check(validations);
+							if(!validation_result.success) {
+								alert(validation_result.message);
+								$(this).focus();
+								return;
+							}
+							*/
+						});
+					},
+					
+					// 템플릿 입력 창 초기화
+					// 템플릿 블럭 내 이벤트 초기화
+					// 블럭 내 이벤트 : 삭제, 이동(위/아래)
+					_init_article_template : function() {
+						var plugin = this;
+						plugin._$article_template = $(`
+							<div class="card mb-3" data-template-root="" data-template-id="">
+								<div class="card-header">
+									<div class="row">
+										<div class="col-1" data-template-icon=""></div>
+										<div class="col-9" data-template-description=""></div>
+										<div class="col-2 text-end">
+											<div class="btn-group" role="group" aria-label="전체 정렬 버튼 그룹">
+												<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-all="" value="left" checked>
+												<label class="btn btn-outline-primary" data-sort-all-label="left" for=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-left" viewBox="0 0 16 16">
+													  <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</label>
+
+												<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-all="" value="center">
+												<label class="btn btn-outline-primary" data-sort-all-label="center" for="">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+													  <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</label>
+
+												<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-all="" value="right">
+												<label class="btn btn-outline-primary" data-sort-all-label="right" for="">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-right" viewBox="0 0 16 16">
+													  <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z"/>
+													</svg>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-body" data-article-contents-root="">
+									<div class="mb-3" data-component-type="image">
+										<label for="" data-component-label="" class="form-label"></label>
+										<a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
+											<span class="badge rounded-pill bg-danger">
+												<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-question" viewBox="0 0 16 16">
+													<path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+												</svg>
+											</span>
+										</a>
+										<input id="" type="file" data-component-key="" class="form-control form-control-sm">
+										<label class="tooltip_newline" data-component-tooltip="newline"></label>
+									</div>
+									<div class="mb-3" data-component-type="text">
+										<label for="" data-component-label="" class="form-label"></label>
+										<a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
+											<span class="badge rounded-pill bg-danger">
+												<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-question" viewBox="0 0 16 16">
+													<path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+												</svg>
+											</span>
+										</a>
+										<div class="input-group">
+											<input id="" type="text" data-component-key="" class='form-control form-control-sm'>
+											<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-one="" value="left" checked>
+												<label class="btn btn-outline-primary" data-sort-one-label="left" for=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-left" viewBox="0 0 16 16">
+													  <path d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</label>
+
+												<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-one="" value="center">
+												<label class="btn btn-outline-primary" data-sort-one-label="center" for="">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
+													  <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</label>
+
+												<input type="radio" class="btn-check" name="" id="" autocomplete="off" data-sort-one="" value="right">
+												<label class="btn btn-outline-primary" data-sort-one-label="right" for="">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter-right" viewBox="0 0 16 16">
+													  <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5zm0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5z"/>
+													</svg>
+												</label>
+										</div>
+										<label class="tooltip_newline" data-component-tooltip="newline"></label>
+									</div>
+									<div class="mb-3" data-component-type="url">
+										<a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="right" title="Tooltip on right">
+											<span class="badge rounded-pill bg-danger">
+												<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-question" viewBox="0 0 16 16">
+													<path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+												</svg>
+											</span>
+										</a>
+										<label for="" data-component-label="" class="form-label"></label>
+										<input id="" type="text" data-component-key="" class='form-control form-control-sm'>
+										<label class="tooltip_newline" data-component-tooltip="newline"></label>
+									</div>
+									<div class="mb-3" data-component-type="group">
+										<div class="row mb-3">
+											<div class="col-10" data-component-label=""></div>
+											<div class="col-2 text-end">
+												<button type="button" class="btn btn-success" data-group-append-btn="">영역 추가</button>
+											</div>
+										</div>
+										<div data-group-append-root="">
+											<div class="card mb-3" data-group-append-template="">
+												<div class="card-header" data-component-label=""></div>
+												<div class="card-body" data-group-article-contents-root=""></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						`);
+						
+						// 전체 정렬버튼 클릭 이벤트 설정
+						plugin._$article_template.find("[data-sort-all]").on("click", function(){
+							var $selected_btn = $(this);
+							var sort_type = $selected_btn.val();
+							$selected_btn.closest("[data-template-root]").find("[data-sort-one-label="+sort_type+"]").trigger("click");
+						});
+						
+						// 영역 추가 버튼 클릭 이벤트 설정
+						plugin._$article_template.find("[data-group-append-btn]").on("click", function(){
+							var $group_append_btn = $(this);
+							var $block_root = $group_append_btn.closest("[data-component-type=group]");
+							
+							var $group_append_template = $group_append_btn.data("group_append_template").clone(true);
+							$block_root.find("[data-group-append-root]").append($group_append_template);
+							// component_key로 치환한 for, id를 uuid로 변경 적용
+							// group 컴포넌트의 data-group-append-template data에 저장한 후 실행해야 한다. 만약 저장 전에 실행하면 새로 생성되는 group 내 component의 label, id가 꼬이게 됨
+							replace_for_id($group_append_template.find("[data-group-article-contents-root]"), $group_append_btn.data("group_append_keys"));
+						});
+						
+						// 입력 컴포넌트 추출 및 타입별 구성 저장
+						plugin._$component_template_dict = plugin._$article_template.find("[data-component-type]").map(function(component_block_idx, component_block){
+							return $(component_block);
+						}).get().reduce(function(merge_dict, $component_block){
+							var component_type = $component_block.attr("data-component-type");
+							merge_dict[component_type] = $component_block.clone(true);
+							return merge_dict;
+						}, {});
+						
+						// 입력 컴포넌트 처리 완료 후 제거
+						plugin._$article_template.find("[data-article-contents-root]").empty();
+					},
+					
+					// 템플릿 에디터 레이아웃 초기화
+					_init_template_editor_layout : function() {
+						var plugin = this;
+						
+						plugin._init_plugin_block();
+						plugin._init_template_icon_list();
+						plugin._init_article_template();
+					},
+					
+					// 템플릿 리스트를 가져온다. (API)
+					_get_template_dict_api : function() {
+                        //TODO : API 호출 시 ASYNC : False
+						// 템플릿 리스트 정보
+						
+						this._template_dict = {
+							"cntnt-UiTmplt_1" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_1.svg',
+								description: '이미지1+타이틀1+내용1',
+								components : {
+									img_1 : {type: 'image', label:'이미지', required:true, tooltip:[{type:'newline', content:'툴팁내용_newline'},{type:'placeHolder', content:'툴팁내용_placeHolder'},{type:'popover', content:'툴팁내용_popover'},],},
+									ttl_1 : {type: 'text', label:'타이틀', align: {horizontal: true, vertical: false}, tooltip:[{type:'newline', content:'툴팁내용_newline'},{type:'placeHolder', content:'툴팁내용_placeHolder'},],},
+									inf_1 : {type: 'text', label:'내용', align: {horizontal: true, vertical: false}},
+								},
+								use_tags : true,
+							},
+                            "cntnt-UiTmplt_2" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_2.svg',
+								description: '(이미지1+타이틀1+내용1)*2',
+								components : {
+									img_1 : {type: 'image', label:'왼쪽 이미지',},
+									ttl_1 : {type: 'text', label:'왼쪽 타이틀', align: {horizontal: true, vertical: false}},
+									inf_1 : {type: 'text', label:'왼쪽 내용', align: {horizontal: true, vertical: false}},
+									img_2 : {type: 'image', label:'오른쪽 이미지',},
+									ttl_2 : {type: 'text', label:'오른쪽 타이틀', align: {horizontal: true, vertical: false}},
+									inf_2 : {type: 'text', label:'오른쪽 내용', align: {horizontal: true, vertical: false}},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_3" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_3.svg',
+								description: '(이미지1+타이틀1+내용1)*3',
+								components : {
+									img_1 : {type: 'image', label:'왼쪽 이미지',},
+									ttl_1 : {type: 'text', label:'왼쪽 타이틀', align: {horizontal: true, vertical: false}},
+									inf_1 : {type: 'text', label:'왼쪽 내용', align: {horizontal: true, vertical: false}},
+									img_2 : {type: 'image', label:'중간 이미지',},
+									ttl_2 : {type: 'text', label:'중간 타이틀', align: {horizontal: true, vertical: false}},
+									inf_2 : {type: 'text', label:'중간 내용', align: {horizontal: true, vertical: false}},
+									img_3 : {type: 'image', label:'오른쪽 이미지',},
+									ttl_3 : {type: 'text', label:'오른쪽 타이틀', align: {horizontal: true, vertical: false}},
+									inf_3 : {type: 'text', label:'오른쪽 내용', align: {horizontal: true, vertical: false}},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_4" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_4.svg',
+								description: '타이틀1+내용1',
+								components : {
+									ttl_1 : {type: 'text', label:'타이틀', align: {horizontal: true, vertical: false}},
+									inf_1 : {type: 'text', label:'내용', align: {horizontal: true, vertical: false}},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_5" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_5-6.svg',
+								description: '타이틀1+이미지 최대 5',
+								components : {
+									ttl_1 : {type: 'text', label:'타이틀', align: {horizontal: true, vertical: false}},
+									grp_1 : {type: 'group',  label:'이미지 슬라이드', items: {
+										grp_img_1 : {type: 'image', label:'슬라이드 이미지',},
+										grp_idea_badge_1 : {type: 'text', label:'idea 뱃지', align: {horizontal: false, vertical: false}},
+										grp_review_badge_1 : {type: 'text', label:'리뷰 뱃지', align: {horizontal: false, vertical: false}},
+										grp_img_caption_1 : {type: 'text', label:'이미지캡션', align: {horizontal: false, vertical: false}},
+										grp_alt_1 : {
+											type: 'text',
+											label:'대체텍스트 (ALT)',
+											align: {horizontal: false, vertical: false},
+											to_copy_when_empty: {
+												target: "selector/cookie/data",
+												key: "[data-magazine-title]"
+											},
+										},
+									},},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_7" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_7.svg',
+								description: '항목의타이틀1+(항목(최대15개):항목타이틀+항목내용/항목별URL)',
+								components : {
+									ttl_1 : {type: 'text', label:'전체 타이틀', align: {horizontal: true, vertical: false}},
+									grp_1 : {type: 'group', label:'전체 내용', items: {
+										grp_ttl_1 : {type: 'text', label:'하위 타이틀', align: {horizontal: true, vertical: false}},
+										grp_inf_1 : {type: 'text', label:'하위 내용', align: {horizontal: true, vertical: false}},
+										grp_lnk_1 : {type: 'url', label:'하위 링크',},
+										},},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_8" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_8.svg',
+								description: '타이틀1+URL버튼명1+URL1',
+								components : {
+									ttl_1 : {type: 'text', label:'타이틀', align: {horizontal: true, vertical: false}},
+									btn_1 : {type: 'text', label:'버튼명', align: {horizontal: true, vertical: false}},
+									lnk_1 : {type: 'url', label:'링크',},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_9" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_9.svg',
+								description: '이미지1+타이틀1+내용1+URL버튼명1+URL1',
+								components : {
+									img_1 : {type: 'image', label:'이미지',},
+									ttl_1 : {type: 'text', label:'타이틀', align: {horizontal: true, vertical: false}},
+									btn_1 : {type: 'text', label:'버튼명', align: {horizontal: true, vertical: false}},
+									lnk_1 : {type: 'url', label:'링크',},
+								},
+								use_tags : true,
+							},
+							"cntnt-UiTmplt_10" : {
+								icon_url : 'https://www.desker.co.kr/img/admin/icn_cntnt-UiTmplt_10.svg',
+								description: '유튜브 영상 URL',
+								components : {
+									ytb_1 : {type: 'url', label:'유투브 주소',},
+								},
+								use_tags : true,
+							},
+                        };
+					},
+					
+					
+					// 기존 저장된 템플릿 컴포넌트 데이터 로딩 (API)
+					_get_component_data_api : function() {
+						var plugin = this;
+					},
+					
+					
+					// 전체 편집 후 템플릿 컴포넌트 데이터 저장 (API)
+					_save_component_data_api : function() {
+						var plugin = this;
+					},
+					
+					
+					// 템플릿 선택 블럭 초기화
+					_init_selected_template_block : function() {
+						var plugin = this;
+					
+						var $template_list_root = plugin._$el.find(sel(_blk.tmp_list_root)).empty();
+						
+						$.each(this._template_dict, function(template_id, template_info){
+                            
+							var $template_icon = plugin._$icon_tag.clone(true).attr("data-template-id", template_id).attr("src", template_info.icon_url);
+                            
+							$template_list_root.append($template_icon);
+						});
+					},
+					
+					
+					// 기존 저장된 템플릿 컴포넌트 데이터를 템플릿 블럭으로 노출
+					_init_component_data_to_template_block : function() {
+						var plugin = this;
+					},
+					
+					
+					// 전체 편집 후 템플릿 컴포넌트 데이터 취합
+					get_edited_component_data : function() {
+						var plugin = this;
+					},
+				};
+
+				$.fn[pluginName] = function(options) {
+					return this.each(function() {
+						if (!$.data(this, "plugin_" + pluginName)) {
+							$.data(this, "plugin_" + pluginName, new Plugin(this, options));
+						}
+					});
+				};
+
+			})(jQuery, document, window);
+		</script>
+		
+		<script>
+			$(function(){
+				$("[data-template-edit-root]").TemplateEditor({
+					//TemplateEditor의 옵션을 정의하는 곳입니다.
+				});
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div class="container" data-template-edit-root>
+		</div>
+	</body>
+</html>

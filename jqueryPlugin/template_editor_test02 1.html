@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MVC Plugin Example</title>
+</head>
+<body>
+아래 아이콘을 클릭해보세요!
+<div id="addTemplate" class="container" data-template-edit-root></div>
+</body>
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="../plugin.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+$(function(){
+    $("#addTemplate").mvcPlugin();
+});
+
+</script>
+
+<style>
+    .hover_bg_gray {
+        border:2px solid white;
+    }
+    .hover_bg_gray:hover {
+        border-color:gray;
+        cursor:hand;
+    }
+    .tooltip_newline:empty {
+        display:none;
+    }
+    [data-bs-toggle=tooltip][title] {
+        display:none;
+    }
+</style>
