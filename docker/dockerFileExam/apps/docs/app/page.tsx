@@ -22,6 +22,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <h1>docs app 위치</h1>
         <ThemeImage
           className={styles.logo}
           srcLight="turborepo-dark.svg"
